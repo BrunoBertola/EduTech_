@@ -216,6 +216,10 @@
 }
 
 .course-form-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
   font-size: 0.9rem;
@@ -250,6 +254,18 @@
   background: #004494;
 }
 
+.course-form-btn-danger {
+  margin-right: auto;
+  background: #fff;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.course-form-btn-danger:hover:not(:disabled) {
+  background: #fef2f2;
+  border-color: #fca5a5;
+}
+
 @media (max-width: 640px) {
   .course-form-page {
     padding: 1rem;
@@ -261,6 +277,10 @@
 
   .course-form-actions {
     flex-direction: column;
+  }
+
+  .course-form-btn-danger {
+    margin-right: 0;
   }
 
   .course-form-btn {

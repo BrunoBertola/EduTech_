@@ -1,6 +1,6 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const { findByGoogleId, createUser, findById } = require('../services/user.service');
+const { findByGoogleId, findByEmail, linkGoogleAccount, createUser, findById } = require('../services/user.service');
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -36,9 +36,14 @@ if (!hasGoogleConfig) {
 
           let user = await findByGoogleId(googleId);
           if (!user) {
-            const role = req.session.pendingRole || 'alumno';
+            user = email ? await findByEmail(email) : null;
+            if (user) {
+              user = await linkGoogleAccount(user.id, googleId);
+            } else {
+              const role = req.session.pendingRole || 'alumno';
+              user = await createUser({ googleId, name, email, role });
+            }
             delete req.session.pendingRole;
-            user = await createUser({ googleId, name, email, role });
           }
 
           return done(null, user);

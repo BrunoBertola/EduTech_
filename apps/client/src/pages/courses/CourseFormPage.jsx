@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft, Check, ImagePlus, X } from 'lucide-react';
+import { ArrowLeft, Check, ImagePlus, Trash2, X } from 'lucide-react';
 import './CourseFormPage.css';
 
 export default function CourseFormPage({ user }) {
@@ -81,6 +81,24 @@ export default function CourseFormPage({ user }) {
     } catch (err) {
       setError(err.response?.data?.message || 'Error al guardar el curso.');
     } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    const confirmed = window.confirm('Esta accion eliminara el curso y todo su contenido asociado. Quieres continuar?');
+    if (!confirmed) return;
+
+    setError(null);
+    setSuccess(null);
+    setLoading(true);
+
+    try {
+      await axios.delete(`/api/courses/${editId}`);
+      setSuccess('Curso eliminado correctamente.');
+      setTimeout(() => navigate('/courses'), 900);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Error al eliminar el curso.');
       setLoading(false);
     }
   };
@@ -184,6 +202,17 @@ export default function CourseFormPage({ user }) {
             </div>
 
             <div className="course-form-actions">
+              {isEditing && (
+                <button
+                  type="button"
+                  className="course-form-btn course-form-btn-danger"
+                  onClick={handleDelete}
+                  disabled={loading}
+                >
+                  <Trash2 size={16} />
+                  Eliminar curso
+                </button>
+              )}
               <button
                 type="button"
                 className="course-form-btn course-form-btn-secondary"

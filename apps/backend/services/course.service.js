@@ -9,6 +9,17 @@ async function listCourses() {
   );
 }
 
+async function listCoursesByTeacher(teacherId) {
+  return query(
+    `SELECT c.*, u.name AS instructor
+     FROM courses c
+     LEFT JOIN users u ON c.created_by = u.id
+     WHERE c.created_by = $1
+     ORDER BY c.created_at DESC`,
+    [teacherId]
+  );
+}
+
 async function findCourseById(id) {
   const rows = await query(
     `SELECT c.*, u.name AS instructor
@@ -141,6 +152,7 @@ async function isEnrolled(userId, courseId) {
 
 module.exports = {
   listCourses,
+  listCoursesByTeacher,
   findCourseById,
   createCourse,
   updateCourse,

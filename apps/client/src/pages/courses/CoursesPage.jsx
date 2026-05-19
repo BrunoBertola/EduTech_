@@ -10,8 +10,11 @@ export default function CoursesPage({ user }) {
   const [error, setError] = useState(null);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
+  const [ownerFilter, setOwnerFilter] = useState('all');
 
-  const isProfessor = user.role === 'profesor' || user.role === 'administrador';
+  const isAdmin = user.role === 'administrador';
+  const isProfessor = user.role === 'profesor';
+  const canCreateCourse = isProfessor || isAdmin;
 
   useEffect(() => {
     (async () => {
@@ -27,30 +30,31 @@ export default function CoursesPage({ user }) {
   }, []);
 
   const displayedCourses = useMemo(() => {
-    const coursesToShow = isProfessor
-      ? courses.filter(c => c.created_by === user.id)
+    const coursesToShow = isAdmin && ownerFilter === 'mine'
+      ? courses.filter(course => course.created_by === user.id)
       : courses;
+
     return coursesToShow.filter(course => {
       const matchesSearch = course.title.toLowerCase().includes(search.toLowerCase()) ||
         course.description.toLowerCase().includes(search.toLowerCase());
       const matchesCategory = !category || course.instructor === category;
       return matchesSearch && matchesCategory;
     });
-  }, [courses, search, category, isProfessor, user.id]);
+  }, [courses, search, category, isAdmin, ownerFilter, user.id]);
 
   const categories = useMemo(() => {
-    const coursesToFilter = isProfessor
-      ? courses.filter(c => c.created_by === user.id)
+    const coursesToFilter = isAdmin && ownerFilter === 'mine'
+      ? courses.filter(course => course.created_by === user.id)
       : courses;
     const instructors = [...new Set(coursesToFilter.map(c => c.instructor).filter(Boolean))];
     return instructors;
-  }, [courses, isProfessor, user.id]);
+  }, [courses, isAdmin, ownerFilter, user.id]);
 
   return (
     <main className="courses-page">
       <div className="courses-page-container">
         <div className="courses-page-toolbar">
-          <h1>{isProfessor ? 'Mis cursos' : 'Cursos'}</h1>
+          <h1>{canCreateCourse ? (isAdmin ? 'Gestionar cursos' : 'Mis cursos') : 'Cursos'}</h1>
           <div className="courses-toolbar-right">
             <input
               type="text"
@@ -71,7 +75,17 @@ export default function CoursesPage({ user }) {
                 ))}
               </select>
             )}
-            {isProfessor && (
+            {isAdmin && (
+              <select
+                value={ownerFilter}
+                onChange={(e) => setOwnerFilter(e.target.value)}
+                className="courses-select"
+              >
+                <option value="all">Todos los cursos</option>
+                <option value="mine">Mis cursos</option>
+              </select>
+            )}
+            {canCreateCourse && (
               <Button to="/courses/create">Crear</Button>
             )}
           </div>
@@ -82,7 +96,7 @@ export default function CoursesPage({ user }) {
           <div className="courses-loading">Cargando cursos...</div>
         ) : displayedCourses.length === 0 ? (
           <div className="courses-empty">
-            {isProfessor ? 'No has creado ningún curso todavía.' : 'No hay cursos disponibles.'}
+            No hay cursos disponibles.
           </div>
         ) : (
           <div className="courses-grid">
@@ -95,3 +109,4 @@ export default function CoursesPage({ user }) {
     </main>
   );
 }
+

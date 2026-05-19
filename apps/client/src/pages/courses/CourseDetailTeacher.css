@@ -51,6 +51,14 @@
   margin: 0;
 }
 
+.course-teacher-description {
+  color: #4b5563;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin: -0.75rem 0 2rem;
+  max-width: 780px;
+}
+
 .course-teacher-edit {
   display: flex;
   align-items: center;

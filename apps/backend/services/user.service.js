@@ -24,6 +24,11 @@ async function findByEmail(email) {
   return rows[0] || null;
 }
 
+async function linkGoogleAccount(userId, googleId) {
+  await query('UPDATE users SET google_id = $1 WHERE id = $2', [googleId, userId]);
+  return findById(userId);
+}
+
 async function getRoleId(roleName) {
   const rows = await query('SELECT id FROM roles WHERE name = $1', [roleName]);
   return rows[0] ? rows[0].id : null;
@@ -37,6 +42,15 @@ async function createUser({ googleId, name, email, role = 'alumno' }) {
   );
   const userId = rows[0].id;
   return findById(userId);
+}
+
+async function createLocalUser({ name, email, passwordHash, role = 'alumno' }) {
+  const roleId = await getRoleId(role);
+  const rows = await query(
+    'INSERT INTO users (google_id, name, email, role_id, password_hash) VALUES ($1, $2, $3, $4, $5) RETURNING id',
+    [`local:${email}`, name, email, roleId, passwordHash]
+  );
+  return findById(rows[0].id);
 }
 
 async function updateRole(userId, roleName) {
@@ -60,7 +74,9 @@ module.exports = {
   findByGoogleId,
   findById,
   findByEmail,
+  linkGoogleAccount,
   createUser,
+  createLocalUser,
   updateRole,
   listUsers,
   deleteUserById

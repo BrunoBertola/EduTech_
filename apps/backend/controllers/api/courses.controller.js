@@ -1,5 +1,6 @@
 const {
   listCourses: listCoursesService,
+  listCoursesByTeacher,
   findCourseById,
   createCourse: createCourseService,
   updateCourse: updateCourseService,
@@ -12,6 +13,11 @@ const {
 } = require('../../services/course.service');
 
 async function listCourses(req, res) {
+  if (req.user.role === 'profesor') {
+    const courses = await listCoursesByTeacher(req.user.id);
+    return res.json(courses);
+  }
+
   const courses = await listCoursesService();
   res.json(courses);
 }
@@ -21,6 +27,11 @@ async function getCourse(req, res) {
   if (!course) {
     return res.status(404).json({ message: 'Curso no encontrado' });
   }
+
+  if (req.user.role === 'profesor' && course.created_by !== req.user.id) {
+    return res.status(403).json({ message: 'No autorizado' });
+  }
+
   res.json(course);
 }
 

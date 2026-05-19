@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import axios from 'axios';
 import { GraduationCap } from 'lucide-react';
 import './LoginPage.css';
 
@@ -10,11 +13,68 @@ const GoogleIcon = () => (
   </svg>
 );
 
+const initialForm = {
+  mode: 'register',
+  role: 'alumno',
+  name: '',
+  email: '',
+  password: ''
+};
+
 export default function LoginPage() {
+  const [searchParams] = useSearchParams();
+  const [form, setForm] = useState(initialForm);
+  const [loading, setLoading] = useState(null);
+  const initialMessage = searchParams.get('error') === 'google_not_configured'
+    ? 'Google OAuth no esta configurado. Usa cuenta normal o acceso demo.'
+    : '';
+  const [message, setMessage] = useState(initialMessage);
+
+  const updateForm = (field, value) => {
+    setForm(prev => ({ ...prev, [field]: value }));
+    setMessage('');
+  };
+
+  const loginDemo = async (role) => {
+    const demoPasswords = {
+      administrador: 'Admin123!',
+      profesor: 'Profesor123!',
+      alumno: 'Alumno123!',
+    };
+
+    setLoading(`demo-${role}`);
+    setMessage('');
+
+    try {
+      await axios.post('/auth/demo-login', { role, password: demoPasswords[role] });
+      window.location.href = '/';
+    } catch (err) {
+      setMessage(err.response?.data?.message || 'No se pudo iniciar la sesion demo');
+      setLoading(null);
+    }
+  };
+
+  const handleLocalSubmit = async (ev) => {
+    ev.preventDefault();
+    setLoading('local');
+    setMessage('');
+
+    try {
+      const endpoint = form.mode === 'register' ? '/auth/local/register' : '/auth/local/login';
+      const payload = form.mode === 'register'
+        ? { name: form.name, email: form.email, password: form.password, role: form.role }
+        : { email: form.email, password: form.password };
+
+      await axios.post(endpoint, payload);
+      window.location.href = '/';
+    } catch (err) {
+      setMessage(err.response?.data?.message || 'No se pudo completar el acceso');
+      setLoading(null);
+    }
+  };
+
   return (
     <div className="login-root">
-
-      {/* ── Left panel ── */}
       <div className="login-panel login-panel--left">
         <div className="login-brand">
           <GraduationCap size={26} className="login-brand-icon" />
@@ -24,7 +84,7 @@ export default function LoginPage() {
         <div className="login-claim">
           <h1>
             El conocimiento<br />
-            es el único activo<br />
+            es el unico activo<br />
             que nadie te<br />
             puede quitar.
           </h1>
@@ -35,47 +95,133 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <p className="login-panel-footer">© {new Date().getFullYear()} EduTech</p>
+        <p className="login-panel-footer">(c) {new Date().getFullYear()} EduTech</p>
       </div>
 
-      {/* ── Right panel ── */}
       <div className="login-panel login-panel--right">
         <div className="login-form">
-
-          {/* Solo visible en mobile */}
           <div className="login-mobile-brand">
             <GraduationCap size={24} className="login-brand-icon" />
             <span>EduTech</span>
           </div>
 
           <div className="login-form-header">
-            <h2>Accede a tu cuenta</h2>
-            <p>Selecciona tu rol para continuar con Google</p>
+            <h2>Iniciar sesion o crear cuenta</h2>
+            <p>Accede con Google o crea una cuenta con email</p>
           </div>
 
           <div className="login-options">
             <a href="/auth/google?role=alumno" className="login-btn login-btn--primary">
               <GoogleIcon />
-              <span>Continuar como Alumno</span>
+              <span>Continuar como Alumno con Google</span>
             </a>
-
-            <div className="login-divider">
-              <span>o</span>
-            </div>
 
             <a href="/auth/google?role=profesor" className="login-btn login-btn--secondary">
               <GoogleIcon />
-              <span>Continuar como Profesor</span>
+              <span>Continuar como Profesor con Google</span>
             </a>
           </div>
 
-          <p className="login-legal">
-            Al acceder aceptas el uso de tu cuenta de Google
-            exclusivamente para autenticarte en la plataforma.
-          </p>
+          <div className="login-divider">
+            <span>cuenta normal</span>
+          </div>
+
+          <form className="login-local-form" onSubmit={handleLocalSubmit}>
+            <div className="login-segmented" aria-label="Modo de acceso">
+              <button
+                type="button"
+                className={form.mode === 'register' ? 'active' : ''}
+                onClick={() => updateForm('mode', 'register')}
+              >
+                Crear cuenta
+              </button>
+              <button
+                type="button"
+                className={form.mode === 'login' ? 'active' : ''}
+                onClick={() => updateForm('mode', 'login')}
+              >
+                Entrar
+              </button>
+            </div>
+
+            {form.mode === 'register' && (
+              <>
+                <select
+                  value={form.role}
+                  onChange={(e) => updateForm('role', e.target.value)}
+                  className="login-input"
+                >
+                  <option value="alumno">Alumno</option>
+                  <option value="profesor">Profesor</option>
+                </select>
+                <input
+                  type="text"
+                  placeholder="Nombre"
+                  value={form.name}
+                  onChange={(e) => updateForm('name', e.target.value)}
+                  className="login-input"
+                />
+              </>
+            )}
+
+            <input
+              type="email"
+              placeholder="Email"
+              value={form.email}
+              onChange={(e) => updateForm('email', e.target.value)}
+              className="login-input"
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={form.password}
+              onChange={(e) => updateForm('password', e.target.value)}
+              className="login-input"
+            />
+
+            <button type="submit" className="login-local-submit" disabled={loading !== null}>
+              {loading === 'local'
+                ? 'Procesando...'
+                : form.mode === 'register'
+                  ? 'Crear cuenta normal'
+                  : 'Entrar con email'}
+            </button>
+          </form>
+
+          <div className="login-divider login-divider--demo">
+            <span>acceso demo</span>
+          </div>
+
+          <div className="login-demo-options">
+            <button
+              type="button"
+              className="login-demo-btn login-demo-btn--admin"
+              onClick={() => loginDemo('administrador')}
+              disabled={loading !== null}
+            >
+              {loading === 'demo-administrador' ? 'Accediendo...' : 'Demo Admin'}
+            </button>
+            <button
+              type="button"
+              className="login-demo-btn"
+              onClick={() => loginDemo('alumno')}
+              disabled={loading !== null}
+            >
+              {loading === 'demo-alumno' ? 'Accediendo...' : 'Demo Alumno'}
+            </button>
+            <button
+              type="button"
+              className="login-demo-btn"
+              onClick={() => loginDemo('profesor')}
+              disabled={loading !== null}
+            >
+              {loading === 'demo-profesor' ? 'Accediendo...' : 'Demo Profesor'}
+            </button>
+          </div>
+
+          {message && <p className="login-error">{message}</p>}
         </div>
       </div>
-
     </div>
   );
 }

@@ -21,6 +21,10 @@ const apiResultsRoutes = require('./routes/api/results.routes');
 
 const app = express();
 
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
 // CORS — acepta localhost y dominios ngrok dinámicamente
 const ALLOWED_ORIGINS = [
   process.env.CLIENT_ORIGIN || 'http://localhost:5173',
@@ -74,7 +78,7 @@ app.use('/api/admin', adminRoutes);
 
 // En producción servir React build
 if (process.env.NODE_ENV === 'production') {
-  const buildPath = path.join(__dirname, 'client', 'dist');
+  const buildPath = path.resolve(__dirname, '../client/dist');
   app.use(express.static(buildPath));
   app.get('*', (req, res) => {
     res.sendFile(path.join(buildPath, 'index.html'));

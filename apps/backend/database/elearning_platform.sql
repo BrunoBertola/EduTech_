@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS users (
   google_id VARCHAR(255) NOT NULL UNIQUE,
   name VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL UNIQUE,
+  password_hash TEXT,
   role_id INT NOT NULL,
   created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
   FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -87,7 +88,7 @@ CREATE TABLE IF NOT EXISTS results (
   FOREIGN KEY (test_id) REFERENCES tests(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Inscripciones (relación N:N)
+-- Inscripciones (relacion N:N)
 CREATE TABLE IF NOT EXISTS user_courses (
   user_id INT NOT NULL,
   course_id INT NOT NULL,
@@ -100,3 +101,30 @@ CREATE TABLE IF NOT EXISTS user_courses (
 -- Datos iniciales
 INSERT INTO roles (name) VALUES ('alumno'), ('profesor'), ('administrador')
   ON CONFLICT (name) DO NOTHING;
+
+-- Usuarios de demostracion para la entrega
+INSERT INTO users (google_id, name, email, role_id)
+VALUES
+  (
+    'demo-admin-tfg',
+    'Administrador Demo',
+    'admin@tfgdemo.com',
+    (SELECT id FROM roles WHERE name = 'administrador')
+  ),
+  (
+    'demo-profesor-tfg',
+    'Profesor Demo',
+    'profesor@tfgdemo.com',
+    (SELECT id FROM roles WHERE name = 'profesor')
+  ),
+  (
+    'demo-alumno-tfg',
+    'Alumno Demo',
+    'alumno@tfgdemo.com',
+    (SELECT id FROM roles WHERE name = 'alumno')
+  )
+ON CONFLICT (email) DO UPDATE
+SET
+  google_id = EXCLUDED.google_id,
+  name = EXCLUDED.name,
+  role_id = EXCLUDED.role_id;

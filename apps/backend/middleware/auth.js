@@ -12,6 +12,7 @@ function requireRole(...roles) {
       return res.status(401).json({ message: 'No autenticado. Debes iniciar sesión.' });
     }
 
+    // si es administrador, tiene acceso a todo
     const userRole = req.user && req.user.role;
     if (roles.includes(userRole) || userRole === 'administrador') {
       return next();

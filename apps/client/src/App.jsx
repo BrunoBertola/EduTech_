@@ -36,6 +36,7 @@ function App() {
     return <Layout user={user} logout={logout} />;
   };
 
+  // Rutas públicas y protegidas para estudiantes y profesores
   return (
     <Routes>
       <Route path="/login" element={user ? <Navigate to="/" replace /> : <LoginPage />} />

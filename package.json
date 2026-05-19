@@ -8,7 +8,9 @@
     "server": "npm -w edutech run server",
     "client:dev": "npm -w edutech-client run dev",
     "client:build": "npm -w edutech-client run build",
-    "client:start": "npm -w edutech-client run preview"
+    "client:start": "npm -w edutech-client run preview",
+    "build": "npm -w edutech-client run build",
+    "start": "npm -w edutech start"
   },
   "repository": {
     "type": "git",

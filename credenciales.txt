@@ -1,0 +1,46 @@
+Credenciales de acceso - EduTech
+
+URL de la aplicacion:
+- Pendiente de actualizar con la URL publica del hosting.
+- Desarrollo local: http://localhost:5173
+
+Administrador con control total:
+- URL plataforma local: http://localhost:5173/login
+- URL backoffice local: http://localhost:5173/admin
+- Email / usuario: admin@tfgdemo.com
+- Password: Admin123!
+
+- Rol: administrador
+
+- Acceso plataforma: usar el boton "Demo Admin" de la pantalla de login.
+- Acceso backoffice: introducir email/usuario y password en /admin.
+- Permisos: acceso completo a la plataforma, gestion de usuarios, cursos, lecciones, tests y resultados segun las funciones disponibles en la aplicacion.
+- Estado: usuario precargado en la base de datos y configurado como usuario de administracion.
+
+Usuarios de demostracion de la plataforma:
+
+Profesor:
+- URL local: http://localhost:5173/login
+- Email: profesor@tfgdemo.com
+- Password: Profesor123!
+
+- Rol: profesor
+
+- Acceso: usar el boton "Demo Profesor" de la pantalla de login.
+- Estado: usuario precargado en la base de datos.
+
+Alumno:
+- URL local: http://localhost:5173/login
+- Email: alumno@tfgdemo.com
+- Password: Alumno123!
+
+- Rol: alumno
+
+- Acceso: usar el boton "Demo Alumno" de la pantalla de login.
+- Estado: usuario precargado en la base de datos.
+
+Notas:
+- La aplicacion mantiene Google OAuth como metodo de acceso principal.
+- Los accesos demo permiten entrar sin registrar manualmente al administrador, profesor o alumno.
+- Los usuarios demo estan incluidos en el script de base de datos y en el backup exportado.
+- Cuando la aplicacion este desplegada, sustituir las URLs locales por la URL publica definitiva del hosting.

@@ -1,13 +1,5 @@
-<<<<<<< HEAD
 URL de acceso a la aplicacion:
 
 http://localhost:5173/
 
 Nota: esta es la URL de desarrollo local. Si la aplicacion se despliega en un hosting externo, sustituir esta URL por la direccion publica definitiva.
-=======
-URL de acceso a la aplicacion:
-
-http://localhost:5173/
-
-Nota: esta es la URL de desarrollo local. Si la aplicacion se despliega en un hosting externo, sustituir esta URL por la direccion publica definitiva.
->>>>>>> fedc12a308713d0f718e2b7c4093b1ac9d0d81ba

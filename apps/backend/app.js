@@ -7,6 +7,7 @@ const cors = require('cors');
 const path = require('path');
 
 const { sessionConfig } = require('./config/session');
+const { ensureSchema } = require('./config/db');
 require('./config/passport');
 
 const authRoutes = require('./routes/auth.routes');
@@ -91,6 +92,17 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`EduTech running on http://localhost:${PORT}`);
-});
+
+async function startServer() {
+  try {
+    await ensureSchema();
+    app.listen(PORT, () => {
+      console.log(`EduTech running on http://localhost:${PORT}`);
+    });
+  } catch (err) {
+    console.error('Failed to initialize database schema:', err);
+    process.exit(1);
+  }
+}
+
+startServer();

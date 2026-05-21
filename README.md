@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ﻿# EduTech
 
 Plataforma e-learning full-stack con **React + Vite** en el frontend y **Express + PostgreSQL** en el backend, organizada como **monorepo con npm workspaces**.
@@ -237,7 +236,6 @@ npm -w edutech run start
 | `npm run client:build` | Build de producción del frontend |
 | `npm run client:start` | Preview del build de producción |
 
-=======
 ﻿# EduTech
 
 Plataforma e-learning full-stack con **React + Vite** en el frontend y **Express + PostgreSQL** en el backend, organizada como **monorepo con npm workspaces**.
@@ -475,5 +473,3 @@ npm -w edutech run start
 | `npm run client:dev` | Solo el frontend (Vite) |
 | `npm run client:build` | Build de producción del frontend |
 | `npm run client:start` | Preview del build de producción |
-
->>>>>>> fedc12a308713d0f718e2b7c4093b1ac9d0d81ba

@@ -1,5 +1,5 @@
 URL de acceso a la aplicacion:
 
-https://edutech-production-703d.up.railway.app/login
+https://edutech-production-703d.up.railway.app/
 
 

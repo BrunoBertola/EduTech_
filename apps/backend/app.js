@@ -90,7 +90,9 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+// Asegúrate de usar process.env.PORT
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`EduTech running on http://localhost:${PORT}`);
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`EduTech se ejecuta en http://0.0.0.0:${PORT}`);
 });

@@ -1,7 +1,7 @@
 {
   "name": "tfg",
   "version": "1.0.0",
-  "description": "Plataforma e-learning full‑stack con **React + Vite** en el frontend y **Express + PostgreSQL** en el backend.",
+  "description": "Plataforma e-learning full-stack con React y Vite en el frontend y Express con PostgreSQL en el backend.",
   "main": "index.js",
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run client:dev\"",
@@ -9,12 +9,12 @@
     "client:dev": "npm -w edutech-client run dev",
     "client:build": "npm -w edutech-client run build",
     "client:start": "npm -w edutech-client run preview",
-    "build": "npm -w edutech-client run build",
-    "start": "npm -w edutech start"
+    "build": "npm run client:build",
+    "start": "npm -w edutech run start"
   },
   "repository": {
     "type": "git",
-    "url": "git@github-personal:Jaru03/TFG.git"
+    "url": "https://github.com/BrunoBertola/EduTech_.git"
   },
   "keywords": [],
   "author": "",
@@ -25,5 +25,8 @@
   ],
   "devDependencies": {
     "concurrently": "^8.2.0"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.60.4"
   }
 }

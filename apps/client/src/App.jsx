@@ -60,6 +60,7 @@ function App() {
       </Route>
 
       <Route path="/admin" element={<AdminPage />} />
+      <Route path="/users" element={<AdminPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
